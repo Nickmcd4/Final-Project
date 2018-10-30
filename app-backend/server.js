@@ -37,7 +37,7 @@ const auth = require('./routes/authRoutes');
 const posts = require('./routes/postRoutes');
 
 app.use('/api/chatapp', auth);
-app.use('/api/chattapp', posts)
+app.use('/api/chatapp', posts)
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

@@ -3,7 +3,9 @@ const router = express.Router();
 
 const PostCtrl = require('../controllers/posts');
 
-router.post('/posts/add-post', PostCtrl.AddPost);
+const AuthHelper = require('../Helpers/AuthHelper');
+
+router.post('/post/add-post', AuthHelper.VerifyToken, PostCtrl.AddPost);
 
 
 module.exports = router;
