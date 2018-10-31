@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+
 // const logger = require('morgan');
 
 const app = express();
@@ -9,6 +10,10 @@ const app = express();
 app.use(cors());
 
 const dbConfig = require('./config/secret');
+
+const server = require('http').createServer(app);
+
+const io = require('socket.io').listen(server);
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -33,12 +38,14 @@ mongoose.connect(dbConfig.url, {
     useNewUrlParser: true
 });
 
+require('./socket/streams')(io);
+
 const auth = require('./routes/authRoutes');
 const posts = require('./routes/postRoutes');
 
 app.use('/api/chatapp', auth);
 app.use('/api/chatapp', posts)
 
-app.listen(3000, () => {
+server.listen(3000, () => {
     console.log('Server running on port 3000');
 });
