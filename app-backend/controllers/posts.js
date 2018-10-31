@@ -104,5 +104,36 @@ module.exports = {
                     message: "Error ocurred"
                 });
             })
+    },
+
+    async AddComment(req, res) {
+
+        // console.log(req.body);
+
+        //send post Id to req.body
+        const postId = req.body.postId;
+        //find post by id and update comment relevant to user and post id in the database 
+        await Post.update({
+                _id: postId
+            }, {
+                $push: {
+                    comments: {
+                        userId: req.user._id,
+                        username: req.user.username,
+                        comment: req.body.comment,
+                        createdAt: new Date()
+                    }
+                }
+            })
+            .then(() => {
+                res.status(HttpStatus.OK).json({
+                    message: "Comment added to post"
+                });
+            })
+            .catch(err => {
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                    message: "Error ocurred"
+                });
+            })
     }
 };
