@@ -71,5 +71,38 @@ module.exports = {
                 message: "Failed to retrieve posts"
             })
         }
+    },
+
+    async AddLike(req, res) {
+        //send post Id to req.body
+        const postId = req.body._id;
+        //find post by id and update likes set by username of user adding the like on a post 
+        await Post.update({
+                _id: postId,
+                //checks to see if username already exists in array, if it does not adds like, if it does skips adding the like 
+                "likes.username": {
+                    $ne: req.user.username
+                }
+            }, {
+                $push: {
+                    likes: {
+                        username: req.user.username
+                    }
+                },
+                //increment total likes by one 
+                $inc: {
+                    totalLikes: 1
+                },
+            })
+            .then(() => {
+                res.status(HttpStatus.OK).json({
+                    message: "Post has been liked"
+                });
+            })
+            .catch(err => {
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                    message: "Error ocurred"
+                });
+            })
     }
 };
